@@ -1,4 +1,5 @@
 import { makeAutoObservable, autorun } from 'mobx';
+import { FetchStatus } from '../../common/types';
 
 interface AuthenticateParams {
   email: string;
@@ -7,6 +8,7 @@ interface AuthenticateParams {
 
 class AuthStore {
   isLoggedIn = false;
+  logoutStatus: FetchStatus = 'NOT_STARTED';
 
   constructor() {
     makeAutoObservable(this);
@@ -27,6 +29,19 @@ class AuthStore {
         } else {
           reject(false);
         }
+      }, 500);
+    });
+  }
+
+  logout() {
+    this.logoutStatus = 'LOADING';
+
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        this.isLoggedIn = false;
+        this.logoutStatus = 'NOT_STARTED';
+
+        resolve(true);
       }, 500);
     });
   }
