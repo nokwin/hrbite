@@ -17,6 +17,7 @@ interface UpdateEmployeeByIdParams {
 
 class EmployeeStore {
   listFetchStatus: FetchStatus = 'NOT_STARTED';
+  deleteEmployeeStatus: FetchStatus = 'NOT_STARTED';
   listEmployees: ListEmployeesPaginatedDto['results'] = [];
 
   constructor() {
@@ -36,14 +37,25 @@ class EmployeeStore {
       });
 
       const updatedEmployees = this.getUpdatedEmployees();
-      this.listFetchStatus = 'SUCCESS';
-      this.listEmployees = data.results.map((employee) => {
-        const updatedEmployee = updatedEmployees.find(
-          (emp) => emp.login.uuid === employee.login.uuid
-        );
+      const deletedEmployees = this.getDeletedEmployees();
 
-        return updatedEmployee || employee;
-      });
+      this.listEmployees = data.results
+        .filter((employee) => {
+          const deletedEmployee = deletedEmployees.find(
+            (emp) => emp === employee.login.uuid
+          );
+
+          return !deletedEmployee;
+        })
+        .map((employee) => {
+          const updatedEmployee = updatedEmployees.find(
+            (emp) => emp.login.uuid === employee.login.uuid
+          );
+
+          this.listFetchStatus = 'SUCCESS';
+
+          return updatedEmployee || employee;
+        });
     } catch (e) {
       this.listFetchStatus = 'FAILED';
     }
@@ -93,8 +105,34 @@ class EmployeeStore {
 
           resolve(true);
         } catch (e) {
-          console.log(e);
+          reject(e);
         }
+      }, 500);
+    });
+  }
+
+  getDeletedEmployees(): string[] {
+    return JSON.parse(localStorage.getItem('deletedEmployees') || '[]');
+  }
+
+  async deleteEmployeeById(id: string) {
+    this.deleteEmployeeStatus = 'LOADING';
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        const deletedEmployees = this.getDeletedEmployees();
+        deletedEmployees.push(id);
+
+        localStorage.setItem(
+          'deletedEmployees',
+          JSON.stringify(deletedEmployees)
+        );
+
+        this.listEmployees = [];
+        this.listFetchStatus = 'NOT_STARTED';
+
+        this.deleteEmployeeStatus = 'NOT_STARTED';
+        resolve(true);
       }, 500);
     });
   }
