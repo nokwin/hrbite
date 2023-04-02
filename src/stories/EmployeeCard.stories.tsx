@@ -15,4 +15,5 @@ Primary.args = {
   name: 'Dmytro Batarin',
   dob: new Date(),
   photo: 'https://randomuser.me/api/portraits/men/25.jpg',
+  uuid: '1',
 };

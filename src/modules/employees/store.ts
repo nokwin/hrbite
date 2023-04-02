@@ -34,6 +34,10 @@ class EmployeeStore {
       this.listFetchStatus = 'FAILED';
     }
   }
+
+  findEmployeeById(id: string) {
+    return this.listEmployees.find((employee) => employee.login.uuid === id);
+  }
 }
 
 const employeeStoreInstance = new EmployeeStore();

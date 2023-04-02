@@ -49,6 +49,7 @@ export const ListEmployees: FC<ListEmployeesProps> = observer(({}) => {
             name={`${employee.name.first} ${employee.name.last}`}
             dob={new Date(employee.dob.date)}
             photo={employee.picture.large}
+            uuid={employee.login.uuid}
           />
         );
       })}
