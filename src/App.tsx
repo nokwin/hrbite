@@ -5,6 +5,7 @@ import { LoginPage } from './modules/auth/pages/login.page';
 import { PrivateRoute } from './modules/auth/components/private-route.component';
 import { ListEmployees } from './modules/employees/pages/list-employees.page';
 import { EmployeeInfoPage } from './modules/employees/pages/employee-info.page';
+import { EmployeeEditPage } from './modules/employees/pages/employee-edit.page';
 
 interface AppProps {}
 
@@ -27,6 +28,14 @@ export const App: FC<AppProps> = ({}) => {
             element={
               <PrivateRoute>
                 <EmployeeInfoPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/employee/:id/edit"
+            element={
+              <PrivateRoute>
+                <EmployeeEditPage />
               </PrivateRoute>
             }
           />
